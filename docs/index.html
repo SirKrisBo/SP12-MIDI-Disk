@@ -35,8 +35,8 @@
 <meta name="description" content="SP-12 MIDI Disk: a disk drive in the browser for the SP-12's MIDI medium (Cassette/Disk 3).">
 <title>SP-12 MIDI Disk</title>
 <!--
-  SP-12 MIDI Disk, page version 1.5 (Session 1.38, 2026-11-15; 1.4 Session 1.37, 1.3 Session 1.36, 1.2 Session 1.35, 1.1
-  Session 1.33, 1.0 Session 1.32). One
+  SP-12 MIDI Disk, page version 1.6 (Session 1.53, 2026-11-19; 1.5 Session 1.38, 1.4 Session 1.37, 1.3 Session 1.36, 1.2
+  Session 1.35, 1.1 Session 1.33, 1.0 Session 1.32). One
   self-contained file: no libraries, no fonts or anything else from the internet; works from file:// and from GitHub
   Pages. Web MIDI: Chrome / Edge.
   Script blocks:
@@ -49,7 +49,8 @@
                   Session 1.34 reference player, checked against the firmware's own runs), the voice renderer
     play-worklet  (text) the AudioWorklet processor; the page loads play-core + play-worklet as the worklet module
     sound-core    the sound-file model and encoder, the firmware's sound rules, audio files in and out (page 1.4)
-    file-core     the disk file formats: .sp12 (this page), the SP12 app's .SPLB12 / .SPLQ12, the tool's .SP12 (page 1.5)
+    file-core     the disk file formats: .sp12 (this page), the SP12 app's .SPLB12 / .SPLQ12, EMXP's .SP12 (page 1.5) and
+                  .SQ12 (page 1.6)
     edit-core     editing the sequence file model (notes, several notes at once, segment settings, segments, songs, song
                   steps), each rule from the firmware; the page writes every edit with play-core's encoder
     page          the panel: MIDI ports, keys, lamps, the two disks and browser storage, playback, step view and editing, log
@@ -448,7 +449,7 @@ dialog::backdrop { background: rgba(20, 24, 28, .62); }
   <div class="dlg"><section class="sec">
     <div class="sec-cap"><h2 id="h-help">Help</h2><button type="button" class="cap-x" id="k-help-close" aria-label="Close Help"><span class="xb" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 3 13 13M13 3 3 13"/></svg></span></button></div>
     <div class="sec-body">
-      <p><b>SP-12 MIDI Disk</b>, page version <span class="ver">1.5</span> (2026-11-15). The page is a disk drive for the SP-12's
+      <p><b>SP-12 MIDI Disk</b>, page version <span class="ver">1.6</span> (2026-11-19). The page is a disk drive for the SP-12's
         MIDI medium: the SP-12 saves its sounds or sequences here and loads them back, over MIDI. It keeps two disks, as you
         would keep a sound floppy and a sequence floppy: the <b>SOUND</b> disk and the <b>SEQ</b> disk. <b>SAVE</b> each to a
         file to keep it.</p>
@@ -478,9 +479,9 @@ dialog::backdrop { background: rgba(20, 24, 28, .62); }
       <h3>Files</h3>
       <p><b>SAVE</b> writes the disk shown as a <b>.sp12</b> file: Chrome and Edge on a computer ask where (folder and name;
         Cancel saves nothing), other browsers download it. <b>LOAD</b> opens .sp12 files (and the test page's .sp12disk), and
-        also the SP12 app's <b>.SPLB12</b> (sounds) and <b>.SPLQ12</b> (sequences) and the SP12 tool's <b>.SP12</b>; it tells
-        them apart by their content and puts each into the disk of its kind. A disk opened from an app or tool file is saved
-        as .sp12 too.</p>
+        also the SP12 app's <b>.SPLB12</b> (sounds) and <b>.SPLQ12</b> (sequences) and EMXP's <b>.SP12</b> (sounds) and
+        <b>.SQ12</b> (sequences); it tells them apart by their content and puts each into the disk of its kind. A disk opened
+        from an app or EMXP file is saved as .sp12 too.</p>
       <p>The SAVE lamp lights while the disk shown holds data that is not in a file yet. The disks also stay in this browser
         (after a reload too), but browsers can clear what they keep: save to files. Nothing is sent anywhere: the page talks
         only to your MIDI ports.</p>
@@ -559,7 +560,7 @@ dialog::backdrop { background: rgba(20, 24, 28, .62); }
       <!-- the panel has no footer (owner, 2026-11-14): these lines are the page's version and its notices (owner, 2026-11-15:
            the GPL's "Appropriate Legal Notices": copyright, no warranty, the licence and where to see it; E-mu's credit; the
            disclaimer) -->
-      <p id="help-foot">SP-12 MIDI Disk, page version <span class="ver">1.5</span>.</p>
+      <p id="help-foot">SP-12 MIDI Disk, page version <span class="ver">1.6</span>.</p>
       <p id="help-licence">&copy; 2026 Kris O'Sullivan. Free software under the GNU GPL v3 or later, with no warranty. Licence and
         source: <a href="https://github.com/SirKrisBo/SP12-MIDI-Disk" target="_blank" rel="noopener noreferrer">github.com/SirKrisBo/SP12-MIDI-Disk</a></p>
       <p id="help-credit">The SP-12, its sounds' tables and its file formats are E-mu Systems' work; SP-12 and E-mu are
@@ -598,8 +599,8 @@ dialog::backdrop { background: rgba(20, 24, 28, .62); }
 </dialog>
 
 <!-- LOAD (page 1.5, owner): the disk files only, by extension (no MIME type: application/octet-stream made Chrome offer .bin,
-     .com, .exe ...); ".sp12" also matches the tool's ".SP12" -->
-<input id="f-disk" type="file" accept=".sp12,.sp12disk,.splb12,.splq12" hidden>
+     .com, .exe ...); ".sp12" also matches EMXP's ".SP12"; ".sq12": EMXP's sequence files (page 1.6) -->
+<input id="f-disk" type="file" accept=".sp12,.sp12disk,.splb12,.splq12,.sq12" hidden>
 <input id="f-snd" type="file" multiple accept="audio/*,.wav,.wave,.aif,.aiff,.aifc,.mp3,.flac,.ogg,.oga,.opus,.m4a,.webm" hidden>
 <div id="announce" class="sr-only" aria-live="polite"></div>
 
@@ -1727,7 +1728,7 @@ var SP12Snd = (function () {
 // ===================================================================================== SP-12 MIDI Disk, disk files
 // Page 1.5 (Session 1.38; owner: compatibility with existing files is the gold standard): the files LOAD opens, told apart
 // by their content (not by the extension: ".sp12" and ".SP12" are the same name on Windows). Each holds the SP-12 file's
-// blocks in order, block 0 first. SAVE writes only this page's own format (owner, 2026-11-15): app and tool files are
+// blocks in order, block 0 first. SAVE writes only this page's own format (owner, 2026-11-15): app and EMXP files are
 // opened, not written.
 //  - 'sp12'  this page's SP12DISK (drive-core diskToFile / fileToDisk): "SP12DISK", version 1, 3 zero
 //            bytes, the block count (4 bytes, low first), the blocks of 256 bytes. ".sp12" (and the test page's ".sp12disk"). A
@@ -1737,11 +1738,16 @@ var SP12Snd = (function () {
 //            first; the 293rd byte = the last 4 bits and 3 pad bits). Every byte below 80h. The pad bits are ignored, as
 //            the SP-12 ignores them (MIDI_RECEIVE_BLOCK 0877-0885); the owner's app files have 011b in every block; what the
 //            SP-12 itself sends there is bits 7-5 of RAM 66F0h (MIDI_SEND_BLOCK 0836-085B), a byte no save writes.
-//  - 'tool'  the command-line tool's ".SP12": a 512-byte preamble (00h 01h, a 24-bit big-endian count = the blocks + 2,
+//  - 'tool'  EMXP's ".SP12" (sound files): a 512-byte preamble (00h 01h, a 24-bit big-endian count = the blocks + 2,
 //            the rest 00h), the blocks of 256 bytes, then 66 bytes (00h 01h and 64 x 00h).
+//  - 'sq12'  EMXP's ".SQ12" (sequence files; page 1.6, Session 1.53): the same preamble, the blocks of 256 bytes (block 0
+//            type 17h), then 00h bytes (200 in the one file seen; their number is not checked). The blocks are the file
+//            the SP-12's Save Sequences sends, its pad (ROM A from 0000h) included: stock v2.6 loaded, verified and saved
+//            that file back byte for byte (PROVEN in the emulator). Tried after 'tool', so every file that opened
+//            before 1.6 opens as it did.
 // Pure logic, no page access (the tests run this block on its own). Needs SP12.unpack / fileToDisk.
 var SP12File = (function () {
-  var APP = 293, HEAD = 512, TAIL = 66;
+  var APP = 293, HEAD = 512, TAIL = 66, SQ_TAIL = 200;
   function isType(t) { return t === 0x17 || t === 0x18 || t === 0x1A; }
   // bytes (Uint8Array) -> { fmt, blocks, note (a remark for the log, or '') }; throws when the bytes are none of the formats
   function read(f) {
@@ -1759,6 +1765,19 @@ var SP12File = (function () {
         return { fmt: 'tool', blocks: blocks, note: odd ? odd + ' preamble / trailer bytes differ from the usual 00h 01h ... form' : '' };
       }
     }
+    if (f.length >= HEAD + 256 && f[0] === 0x00 && f[1] === 0x01) {
+      n = (f[2] << 16) | (f[3] << 8) | f[4];
+      var t1 = HEAD + 256 * (n - 2);
+      if (n >= 3 && f.length >= t1 && f[HEAD] === 0x17) {
+        var odd1 = 0, seqBlocks = [], notes = [];
+        for (i = 5; i < HEAD; i++) if (f[i]) odd1++;
+        for (i = t1; i < f.length; i++) if (f[i]) odd1++;
+        for (i = 0; i < n - 2; i++) seqBlocks.push(f.slice(HEAD + 256 * i, HEAD + 256 * (i + 1)));
+        if (f.length - t1 !== SQ_TAIL) notes.push('a tail of ' + (f.length - t1) + ' bytes (' + SQ_TAIL + ' usual)');
+        if (odd1) notes.push(odd1 + ' preamble / tail bytes not 00h');
+        return { fmt: 'sq12', blocks: seqBlocks, note: notes.join('; ') };
+      }
+    }
     if (f.length && f.length % APP === 0) {
       var low = true;
       for (i = 0; i < f.length && low; i++) if (f[i] & 0x80) low = false;
@@ -1771,7 +1790,7 @@ var SP12File = (function () {
     }
     return { fmt: 'sp12', blocks: SP12.fileToDisk(f), note: 'plain 256-byte blocks without the SP12DISK header' };
   }
-  var NAMES = { sp12: 'SP-12 MIDI Disk (.sp12)', app: 'SP12 app (.SPLB12 / .SPLQ12)', tool: 'SP12 tool (.SP12)' };
+  var NAMES = { sp12: 'SP-12 MIDI Disk (.sp12)', app: 'SP12 app (.SPLB12 / .SPLQ12)', tool: 'EMXP (.SP12)', sq12: 'EMXP sequences (.SQ12)' };
   return { read: read, NAMES: NAMES };
 })();
 </script>
@@ -1836,7 +1855,7 @@ var SP12Lcd = (function () {
     // page keys
     diskIn:     function (slot, c) { return [disk(slot) + ' in', diskLine(c, slot)]; },
     newDisk:    function (slot) { return ['New ' + disk(slot), 'Disk is empty']; },
-    loaded:     function (c, slot) { return ['File loaded', diskLine(c, slot)]; },
+    loaded:     function (c, slot, fmt) { return [fmt === 'sq12' ? 'EMXP sequences' : 'File loaded', diskLine(c, slot)]; },
     restored:   function (c, slot) { return ['Disk restored', diskLine(c, slot)]; },
     undone:     function (slot, c) { return ['Undo: ' + disk(slot), diskLine(c, slot)]; },
     savedFile:  function (n) { return ['Saved to file', fit([n + (n === 1 ? ' block' : ' blocks'), n + ' blks'])]; },
@@ -3110,7 +3129,7 @@ var SP12Edit = (function () {
 'use strict';
 (function () {
   var $ = function (id) { return document.getElementById(id); };
-  var PAGE_VERSION = '1.5';
+  var PAGE_VERSION = '1.6';
   var T0 = performance.now();
   var BUSY_MS = 5000;                  // a function counts as running while the SP-12 sent something in the last 5 s
   var REFUSED_MS = 1500;               // block 0 sent, then this long with nothing: the SP-12 refused a sound load
@@ -3625,8 +3644,8 @@ var SP12Edit = (function () {
     else go();
   };
   $('k-load').onclick = function () { dismiss(); $('f-disk').click(); };
-  // a disk file's bytes (LOAD): this page's .sp12 / .sp12disk, the SP12 app's .SPLB12 / .SPLQ12 or the tool's .SP12, told
-  // apart by their content (file-core read; page 1.5)
+  // a disk file's bytes (LOAD): this page's .sp12 / .sp12disk, the SP12 app's .SPLB12 / .SPLQ12 or EMXP's .SP12 / .SQ12,
+  // told apart by their content (file-core read; page 1.5, .SQ12 page 1.6: the screen names it, "EMXP sequences")
   function loadBytes(bytes, name) {
     var got, blocks;
     try { got = SP12File.read(bytes); blocks = got.blocks; }
@@ -3637,7 +3656,7 @@ var SP12Edit = (function () {
       setSlot(k, blocks, false); markInFile(blocks); select(k, true);
       info('file ' + name + ' loaded into the ' + NAME[k] + ': ' + SP12File.NAMES[got.fmt] + ', ' + blocks.length + ' blocks, type ' + hex2(typeOf(blocks)) + 'h' +
         (got.note ? ' (' + got.note + ')' : ''));
-      notice(LCD.loaded(catalog(), k), 6); announce('File loaded into the ' + NAME[k] + '.');
+      notice(LCD.loaded(catalog(), k, got.fmt), 6); announce((got.fmt === 'sq12' ? 'EMXP sequence file' : 'File') + ' loaded into the ' + NAME[k] + '.');
     };
     if (s.unsaved && s.blocks.length) ask('The ' + NAME[k] + ' holds data that is not in a file yet. Replace it with ' + name + '?', 'Replace').then(function (y) { if (y) go(); });
     else go();
