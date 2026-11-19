@@ -32,6 +32,13 @@ page explains everything else.
 On Windows only one program can use a MIDI port at a time, so close DAWs and other MIDI programs first. On Android, open
 the page from its https address above, not from a file.
 
+## Run it from a folder on your computer
+
+The page also works without the website. Download `SP12-MIDI-Disk-1.6.zip` from this repository's **Releases**, unzip
+it, and open `index.html` in Chrome or Edge (drag the file into a browser window). Then press **CONNECT** as above. The
+disks a file-opened page keeps in the browser are separate from the website's: use **SAVE** and **LOAD** to move a disk
+from one to the other. On Android use the website address instead.
+
 ## What it can do
 
 - Answers every Cassette/Disk 3 function: Save, Load and Verify Sounds and Sequences, Load Sound #, Load Segment #,
@@ -49,7 +56,7 @@ the page from its https address above, not from a file.
 ## Files
 
 - **Opens:** `.sp12` (this page's own disk files), `.sp12disk`, the SP12 app's `.SPLB12` (sounds) and `.SPLQ12`
-  (sequences), and the SP12 tool's `.SP12`. The page tells them apart by their content.
+  (sequences), and EMXP's `.SP12` (sounds) and `.SQ12` (sequences). The page tells them apart by their content.
 - **Saves:** disks as `.sp12`; sounds as `.wav` (several at once as one `.zip`).
 
 ## Credits and licence
