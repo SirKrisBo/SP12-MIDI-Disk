@@ -40,18 +40,6 @@ folder (for ROM SND, below). Then press **CONNECT** as above. The disks a file-o
 separate from the website's: use **SAVE** and **LOAD** to move a disk from one to the other. On Android use the website
 address instead.
 
-## Safe mode
-
-The page always offers the SP-12 block numbers that no MIDI interface can damage. Firmware with safe mode takes the offer
-by itself; firmware without it ignores it, and the page then repairs the block numbers that MIDI interfaces damage.
-There is nothing to set either way, and the page's screen shows nothing about it; the log notes "Safe mode on" or "Safe
-mode off: recovery in use" once per transfer.
-
-| Firmware | Safe mode |
-|----------|-----------|
-| SP-12 Rambo 3.2, 3.3, Jazzcat 3.1, Jazzcat 3.3 | yes |
-| Stock v2.6, SP-12 Rambo 3.1 | no (the page's recovery) |
-
 ## ROM SND: E-mu's factory sounds for old disks
 
 A stock SP-12 (v2.6) plays pads A1-C8 from its factory sound ROMs. SP-12 Rambo uses that memory for your own sounds, so a
