@@ -23,6 +23,8 @@
   compatibility, remain E-mu's, and are not covered by this licence.
   The SP-12, its sounds' tables and its file formats are E-mu Systems' work; SP-12 and E-mu are trademarks of their
   respective owners.
+  The optional data file factory_sounds.js next to this page (page 1.7, the ROM SND key) holds the SP-12's factory sounds,
+  copied from its sound ROMs: E-mu Systems' work, not covered by this licence (see that file's own notice).
 
   Not affiliated with E-mu Systems.
 -->
@@ -35,10 +37,11 @@
 <meta name="description" content="SP-12 MIDI Disk: a disk drive in the browser for the SP-12's MIDI medium (Cassette/Disk 3).">
 <title>SP-12 MIDI Disk</title>
 <!--
-  SP-12 MIDI Disk, page version 1.6 (Session 1.53, 2026-11-19; 1.5 Session 1.38, 1.4 Session 1.37, 1.3 Session 1.36, 1.2
-  Session 1.35, 1.1 Session 1.33, 1.0 Session 1.32). One
-  self-contained file: no libraries, no fonts or anything else from the internet; works from file:// and from GitHub
-  Pages. Web MIDI: Chrome / Edge.
+  SP-12 MIDI Disk, page version 1.7 (Session 1.58, 2026-11-19; 1.6 Session 1.53, 1.5 Session 1.38, 1.4 Session 1.37, 1.3
+  Session 1.36, 1.2 Session 1.35, 1.1 Session 1.33, 1.0 Session 1.32). One self-contained file: no libraries, no fonts or
+  anything else from the internet; works from file:// and from GitHub Pages. Web MIDI: Chrome / Edge. Page 1.7: one
+  optional data file next to it, factory_sounds.js (E-mu's factory sounds for the ROM SND key, not under this page's
+  licence); without it the page works as before and ROM SND is greyed.
   Script blocks:
     drive-core    the protocol engine, byte for byte the same block as the project's test page (checked by the tests)
     catalog-core  what a disk holds (sounds / sequences) and the 12-bit samples of a sound, decoded only with rules read
@@ -92,9 +95,11 @@ body { margin: 0; background: var(--page); color: var(--page-ink); font: 14px/1.
 
 /* ---------------------------------------------------------------- sections: blue body, grey cap, red rule */
 /* three sections side by side only where Set-up's 4 keys and Disk's 5 keys fit on one line (page 1.3) */
-.strip { display: grid; grid-template-columns: minmax(340px, 1fr) minmax(332px, 1.1fr) minmax(300px, 1.2fr); gap: 16px; align-items: stretch; }
+.strip { display: grid; grid-template-columns: minmax(392px, 1fr) minmax(332px, 1.1fr) minmax(300px, 1.2fr); gap: 16px; align-items: stretch; }
 /* (page 1.4: Set-up holds five keys now, CONNECT SOUND SEQ V2.6 LOCK HELP: its column at least 340 px, so the row stays on one
-   line from 1181 px, where the three sections first stand side by side) */
+   line from 1181 px, where the three sections first stand side by side. Page 1.7: six keys with ROM SND, the column at least
+   392 px, the three sections side by side from 1200 px; narrower, the six keys shrink evenly (.setup-keys below) and stay on
+   one line) */
 .sec { background: var(--sec); border: 2px solid var(--sec-line); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; }
 .sec-cap { position: relative; height: 44px; background: var(--face); flex: none; }
 .sec-cap::before { content: ""; position: absolute; left: 2px; right: 2px; top: 35px; border-top: 1.2px solid var(--rule); }
@@ -142,6 +147,12 @@ body { margin: 0; background: var(--page); color: var(--page-ink); font: 14px/1.
 .led.on { background: radial-gradient(circle at 40% 35%, #ffc2c9 0 16%, #ff2a44 48%, #c3122b 100%); border-color: #ff6175;
   box-shadow: 0 0 7px 2px rgba(255, 42, 68, .75); }
 .led.blank { visibility: hidden; }
+/* Set-up's six keys (page 1.7: CONNECT SOUND SEQ V2.6 LOCK ROM SND HELP) on one line at every width: six columns as wide as
+   the other key rows' keys where there is room, shrinking evenly where there is not (a phone: 44 px each at 360 px, the
+   smallest tap target the page uses), the caps square and centred; on a phone every Set-up label 10 px */
+.setup-keys { display: grid; grid-template-columns: repeat(6, minmax(0, var(--kw))); column-gap: var(--kg); justify-content: start; }
+.setup-keys .key { width: auto; }
+.setup-keys .key .kc { width: min(48px, 100%); height: auto; aspect-ratio: 1 / 1; }
 
 /* ---------------------------------------------------------------- set-up */
 .ports { display: grid; gap: 12px; margin-top: 16px; }
@@ -310,9 +321,12 @@ dialog::backdrop { background: rgba(20, 24, 28, .62); }
 .dlg .sec-body a { color: #9fe0f2; }
 .dlg .keys { margin-top: 14px; justify-content: flex-end; }
 .ask-text { font: 15px/1.5 var(--sans); margin: 0; }
+.help-tab { border-collapse: collapse; margin: 0 0 10px; font: 13px/1.4 var(--sans); }
+.help-tab th, .help-tab td { text-align: left; padding: 3px 12px 3px 0; border-bottom: .7px solid var(--menu-rule); vertical-align: top; }
+.help-tab th { font-weight: 700; font-size: 11px; letter-spacing: .04em; text-transform: uppercase; }
 
 /* ---------------------------------------------------------------- narrower screens */
-@media (max-width: 1180px) {
+@media (max-width: 1199px) {
   .strip { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .sec-status { grid-column: 1 / -1; order: -1; }
 }
@@ -331,6 +345,7 @@ dialog::backdrop { background: rgba(20, 24, 28, .62); }
   .sec-cap h2 { font-size: 22px; }
   .sec-body { padding: 12px 12px 14px; }
   :root { --kw: 52px; --kg: 4px; }
+  .setup-keys .key > span:last-child { font-size: 10px; letter-spacing: 0; }
   /* phones: each pad bank on two rows of four, so every pad stays a 44 px key */
   .pads { grid-template-columns: 16px repeat(4, minmax(0, 1fr)); gap: 4px; }
   .pads .pb { grid-row: span 2; }
@@ -345,6 +360,12 @@ dialog::backdrop { background: rgba(20, 24, 28, .62); }
   .song-list { max-width: none; }
   .song-list .step, .song-list .shead { min-height: 44px; }
   .log-box { height: 300px; }
+}
+@media (max-width: 380px) {
+  /* page 1.7: the narrowest phones: the six Set-up keys 2 px apart (else 4 px, as every key row), so each stays at least
+     44 px wide; the two long Set-up labels at 9 px, so V2.6 LOCK and ROM SND stay apart */
+  .setup-keys { column-gap: 2px; }
+  .setup-keys .key > span.long { font-size: 9px; }
 }
 </style>
 </head>
@@ -364,11 +385,12 @@ dialog::backdrop { background: rgba(20, 24, 28, .62); }
     <section class="sec sec-setup" aria-labelledby="h-setup">
       <div class="sec-cap"><h2 id="h-setup">Set-up</h2></div>
       <div class="sec-body">
-        <div class="keys">
+        <div class="keys setup-keys">
           <button type="button" class="key" id="k-connect"><span class="lamp-slot"><span class="led" id="led-connect" aria-hidden="true"></span></span><span class="kc"></span><span>Connect</span></button>
           <button type="button" class="key" id="k-snd" aria-pressed="true"><span class="lamp-slot"><span class="led" id="led-snd" aria-hidden="true"></span></span><span class="kc"></span><span>Sound</span></button>
           <button type="button" class="key" id="k-seq" aria-pressed="false"><span class="lamp-slot"><span class="led" id="led-seq" aria-hidden="true"></span></span><span class="kc"></span><span>Seq</span></button>
           <button type="button" class="key" id="k-v26" aria-pressed="false"><span class="lamp-slot"><span class="led" id="led-v26" aria-hidden="true"></span></span><span class="kc"></span><span class="long">V2.6 Lock</span></button>
+          <button type="button" class="key" id="k-rom" aria-pressed="false" aria-label="ROM SND: E-mu's factory sounds on pads A to C, added to what is sent"><span class="lamp-slot"><span class="led" id="led-rom" aria-hidden="true"></span></span><span class="kc"></span><span class="long">ROM Snd</span></button>
           <button type="button" class="key" id="k-help"><span class="lamp-slot"><span class="led blank" aria-hidden="true"></span></span><span class="kc"></span><span>Help</span></button>
         </div>
         <div class="ports">
@@ -449,7 +471,7 @@ dialog::backdrop { background: rgba(20, 24, 28, .62); }
   <div class="dlg"><section class="sec">
     <div class="sec-cap"><h2 id="h-help">Help</h2><button type="button" class="cap-x" id="k-help-close" aria-label="Close Help"><span class="xb" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 3 13 13M13 3 3 13"/></svg></span></button></div>
     <div class="sec-body">
-      <p><b>SP-12 MIDI Disk</b>, page version <span class="ver">1.6</span> (2026-11-19). The page is a disk drive for the SP-12's
+      <p><b>SP-12 MIDI Disk</b>, page version <span class="ver">1.7</span> (2026-11-19). The page is a disk drive for the SP-12's
         MIDI medium: the SP-12 saves its sounds or sequences here and loads them back, over MIDI. It keeps two disks, as you
         would keep a sound floppy and a sequence floppy: the <b>SOUND</b> disk and the <b>SEQ</b> disk. <b>SAVE</b> each to a
         file to keep it.</p>
@@ -515,8 +537,9 @@ dialog::backdrop { background: rgba(20, 24, 28, .62); }
       <h3>V2.6 LOCK</h3>
       <p>In Set-up. It can be pressed while the sounds could live on stock v2.6 firmware: 5 s at most, in memory banks 6 / 7, on
         any pad. Pressed, the page moves the sounds into banks 6 / 7, so stock v2.6 loads the SOUND disk, and keeps it that
-        way: REC fills only U1-U8 (stock's names for D1-D8) within 5 s; a pad can be dragged to any pad. Pressed again: back
-        to 3.x (20 s); nothing moves back.</p>
+        way: REC fills only U1-U8 (stock's names for D1-D8) within 5 s; a pad can be dragged to any pad. The factory pads of a
+        stock SP-12's disk (pads using the sound ROMs) stay exactly as they are: no edit changes them, and no pad is dragged
+        onto or from them. Pressed again: back to 3.x (20 s); nothing moves back.</p>
       <h3>Editing</h3>
       <ul><li><b>EDIT</b> opens a segment's notes (rows A1 at the bottom up to D8 at the top, one bank at a time: scroll the box;
           <b>RES</b> the grid) or a song's steps. Brighter, longer bar = louder; +2 / -3 = tuning; amber number = decay (a sound
@@ -545,10 +568,28 @@ dialog::backdrop { background: rgba(20, 24, 28, .62); }
         <li><b>Step taken</b>: that sound has a note there. <b>Memory full</b>: the SP-12 could not load it.</li>
         <li>An edit while it plays is heard from the next pass (a song: its next step).</li>
         <li>Send the SEQ disk with Load Sequences (3 3).</li></ul>
-      <h3>3.2</h3>
-      <p>The page always offers SP-12 Rambo 3.2 block numbers that no MIDI interface can damage. When the SP-12 accepts, the
-        screen shows <b>SP-12 Vers 3.2 / Safe mode on</b> for a moment at the start of the transfer. Stock firmware and release
-        3.1 ignore the offer (no message); the page then repairs the block numbers that MIDI interfaces damage, as before.</p>
+      <h3>ROM SND</h3>
+      <p>In Set-up. On a stock SP-12 (v2.6) pads A1-C8 always play E-mu's factory sounds from the sound ROMs, unless a sample
+        was copied onto the pad; the Rambo firmware has memory where the ROMs were, so those pads load empty. With <b>ROM
+        SND</b> on (lamp lit), every A-C pad without a sample of its own gets its factory sound when the page sends a sound
+        file, as on v2.6: with the disk's own settings for that pad (tuning, decay, level, output) where it has them, else
+        v2.6's factory settings. Pads holding your own samples stay as they are. Each factory sample goes into free memory
+        once (pads that share one share it, as copies do; at most 5 seconds, the two ROMs). An empty SOUND disk sends the
+        whole factory set, as a stock SP-12 has it after Clear Sound Memory. The screen shows what was added (<b>ROM SND: 24
+        pads / 11 samples</b>); the catalog shows and plays the pads that way. When your own samples leave too little memory
+        for them, the disk is sent as it is and the screen says <b>No room for ROM SND</b>. Only what is sent changes: the disk, and the files SAVE writes, stay as they are. While ROM
+        SND is on, REC, DELETE, DECAY, CH and dragging pads are off; ROM SND and V2.6 LOCK cannot both be on. The factory
+        sounds come from a separate file, <b>factory_sounds.js</b>, next to the page; without it ROM SND is greyed.</p>
+      <h3>Safe mode</h3>
+      <p>The page always offers the SP-12 block numbers that no MIDI interface can damage. Firmware with safe mode accepts the
+        offer by itself; firmware without it ignores the offer, and the page then repairs the block numbers that MIDI
+        interfaces damage. Nothing to set either way; the log notes <b>Safe mode on</b> or <b>Safe mode off: recovery in
+        use</b> once per transfer.</p>
+      <table class="help-tab">
+        <tr><th>Firmware</th><th>Safe mode</th></tr>
+        <tr><td>Rambo 3.2, 3.3, Jazzcat 3.1, Jazzcat 3.3</td><td>yes</td></tr>
+        <tr><td>Stock v2.6, Rambo 3.1</td><td>no (the page's recovery)</td></tr>
+      </table>
       <h3>Browsers</h3>
       <p>Chrome or Edge on Windows, Mac, Linux or Android. Safari and every browser on iPhone or iPad have no Web MIDI. On Android,
         open the page from its https address, not from a file. On Windows only one program can use a MIDI port at a time: close
@@ -560,11 +601,13 @@ dialog::backdrop { background: rgba(20, 24, 28, .62); }
       <!-- the panel has no footer (owner, 2026-11-14): these lines are the page's version and its notices (owner, 2026-11-15:
            the GPL's "Appropriate Legal Notices": copyright, no warranty, the licence and where to see it; E-mu's credit; the
            disclaimer) -->
-      <p id="help-foot">SP-12 MIDI Disk, page version <span class="ver">1.6</span>.</p>
+      <p id="help-foot">SP-12 MIDI Disk, page version <span class="ver">1.7</span>.</p>
       <p id="help-licence">&copy; 2026 Kris O'Sullivan. Free software under the GNU GPL v3 or later, with no warranty. Licence and
         source: <a href="https://github.com/SirKrisBo/SP12-MIDI-Disk" target="_blank" rel="noopener noreferrer">github.com/SirKrisBo/SP12-MIDI-Disk</a></p>
       <p id="help-credit">The SP-12, its sounds' tables and its file formats are E-mu Systems' work; SP-12 and E-mu are
         trademarks of their respective owners.</p>
+      <p id="help-romsnd">The factory sounds in factory_sounds.js (ROM SND) are E-mu Systems' work, copied from the SP-12's sound
+        ROMs for compatibility; they remain E-mu's and are not covered by this page's licence.</p>
       <p id="help-emu">Not affiliated with E-mu Systems.</p>
     </div>
   </section></div>
@@ -1191,6 +1234,9 @@ var SP12Snd = (function () {
   }
   function memOf(m, b) { if (!m.mem[b]) { m.mem[b] = new Uint16Array(65536); m.mem[b].fill(SIL); } return m.mem[b]; }
 
+  // A stock factory reference (decode, page 1.7 of Session 1.59): descriptor bank 0 / 1, region length 0, and a play length
+  // other than the empty pad's 2 (stored NOT 2 = FFFDh). Counted only in an 18h file (decode).
+  function factoryRef(m, n) { return bankOf(m, n) < 2 && !regLen(m, n) && playLen(m, n) !== 2; }
   // The first free position of bank b. Banks 2-7: the stored word. Banks 0 / 1 (m20 SND_BANK_FREE_OF / BANK_FREE_AT, no slot:
   // 6C6Ch-6C6Fh is sound 31's region entry): the highest start + length (16 bits) of the sounds of that bank with memory.
   // m.refs: sounds of an 18h file whose data are not in the file (stock v2.6's factory sounds, banks 0 / 1): not counted.
@@ -1218,10 +1264,15 @@ var SP12Snd = (function () {
     var head = new Uint8Array(1024);
     for (i = 0; i < 4; i++) { if (!blocks[i]) { m.complete = false; m.problems.push('header'); return m; } head.set(blocks[i], 256 * i); }
     m.h.set(head.subarray(1, 1024));
-    // An 18h file carries banks 7 and 6 only (v2.6 save 3FBC-3FF5; m20 FILE_SOUND_TYPE): a sound there in banks 0-5 with a
-    // length is a factory sound of stock v2.6 (ROM banks 0 / 1), with no data in the file. Rambo clears those when it loads
-    // an 18h file (m20 SND_CLEAR_ROM_REFS); the page keeps them until a 3.x edit (clearRefs below).
-    for (i = 0; i < 32; i++) m.refs.push(t === 0x18 && bankOf(m, i) < 6 && regLen(m, i) > 0);
+    // An 18h file carries banks 7 and 6 only (v2.6 save 3FBC-3FF5; m20 FILE_SOUND_TYPE): its sounds in banks 0-5 have no
+    // data in the file. Stock v2.6's factory sounds sit there as region 0 / length 0 with the ROM directory's play values
+    // (SND_CLEAR_SETTINGS 34DD -> SND_LOAD_ROM_SOUND; PROVEN, Session 1.58, stock + ROMs in the emulator); stock refuses
+    // Truncate and Loop on them (35F7 / 3607), so their play length is never the empty pad's 2 (SND_CLEAR_SETTINGS 3500-3505).
+    // factoryRef (page 1.7, Session 1.59, RFI-058): bank 0 / 1, region length 0, play length not 2. (Pages 1.5-1.7 of Session
+    // 1.58 tested "banks 0-5 WITH a length", which no stock file has: kept, it matches nothing real.) Rambo clears both
+    // kinds when it loads an 18h file (m20 SND_CLEAR_ROM_REFS); the page keeps them until a 3.x edit (clearRefs below),
+    // and under V2.6 LOCK always (settle).
+    for (i = 0; i < 32; i++) m.refs.push(t === 0x18 && (bankOf(m, i) < 6 && regLen(m, i) > 0 || factoryRef(m, i)));
     var at = 4;
     for (b = 7; b >= 0; b--) {                                                       // sections 7 .. 0 (m20 FILE_START_BANKS)
       var f = t === 0x18 && b < 6 ? 0 : bankFree(m, b), k = SP12.fcb(f);
@@ -1302,11 +1353,13 @@ var SP12Snd = (function () {
   // holds once it loads it (Load Sounds, then its own Save, gives the file back). It matters after an erase of a bank 0
   // sound: SND_CLOSE_GAP moves the play starts of the empty sounds too (bank 0, start 0: at the gap), and the next load
   // resets them (PROVEN, emulator, Session 1.37's erase runs).
-  // stock (V2.6 LOCK): only the empty bank 0 / 1 sounds (stock's factory references stay; an empty D pad's cleared bytes are
-  // stock's own, n OR 06h = n OR 1Eh for 18h-1Fh), so the file loads the same on stock v2.6 and on 3.x.
+  // stock (V2.6 LOCK): only the empty bank 0 / 1 sounds; stock's factory references (m.refs) stay byte for byte (owner,
+  // RFI-058, 2026-11-19: under V2.6 LOCK an edit leaves factory pads as they are). An empty D pad's cleared bytes are stock's
+  // own (n OR 06h = n OR 1Eh for 18h-1Fh). (Pages 1.5-1.7 of Session 1.58: m.refs never held a real factory pad, so this
+  // cleared them after every edit and after the lock's reorganisation.)
   function settle(m, stock) {
     var t = fileType(m), last = b8(m, LAST);
-    for (var n = 31; n >= 0; n--) if (bankOf(m, n) < 2 && (!regLen(m, n) || (!stock && t === 0x18))) clearSettings(m, n);
+    for (var n = 31; n >= 0; n--) if (bankOf(m, n) < 2 && !(stock && m.refs[n]) && (!regLen(m, n) || (!stock && t === 0x18))) clearSettings(m, n);
     w8(m, LAST, last);
   }
   // SND_CHECK_SHARED 4CF0 with m20: the memory stays when another sound WITH memory has the same bank and region
@@ -1530,6 +1583,189 @@ var SP12Snd = (function () {
     return c;
   }
 
+  // ------------------------------------------------------------------------------- ROM SND (page 1.7): the factory sounds
+  // Stock v2.6 plays sounds 00h-17h (pads A1-C8) from its sound ROMs, banks 0 and 1. Its factory sounds come from a directory
+  // at the top of each ROM bank (SND_FIND_ROM_SOUND 1060 / SND_COPY_ROM_ENTRY 107C: from position FFFDh down, sound number,
+  // 8 name bytes, 10 descriptor bytes): Clear Sound Memory (SND_CLEAR_SOUNDS 498A -> SND_CLEAR_SETTINGS 34DD) gives such a
+  // sound region 0 / length 0 and the ROM's 10 descriptor bytes (bank 0 / 1, play start, NOT play length, loop start, NOT
+  // loop length; PROVEN: stock v2.6 with the ROMs in an emulator, its own Save Sounds). Stock refuses Truncate and Loop on
+  // them (SND_CHECK_SHARED 4CF3 at 35F7 / 3607), so in a stock file their play and loop values are always the ROM's; only
+  // descriptor bytes 0 and 1 (decay mode, level, output, tuning: Set-up 17 / 18) can differ. 3.x has RAM in banks 0 / 1 and
+  // clears such references when it loads a file (m20 SND_CLEAR_ROM_REFS). ROM SND adds the data to what the page SENDS (the
+  // disk in the browser and saved files are not changed): Session 1.60's rule (owner, 2026-11-20; 1.58 filled only the pads
+  // that referred to a factory sample, at the ROM's own addresses): every A-C pad without a sample of its own gets its
+  // factory sample, placed in free memory (withFactory below), in a file 3.x keeps (its bank 0-5 sounds with a region are
+  // real sounds in a 1Ah file).
+  // F (factoryParse): the data file factory_sounds.js (E-mu's directory and samples, separate from this page and its licence).
+  function factoryParse(raw) {
+    if (!raw || raw.format !== 1 || !raw.banks || raw.banks.length !== 2) throw new Error('not a format 1 factory sounds file');
+    var F = { mem: [null, null], positions: [0, 0], entries: [], samples: [], byPad: [] }, hexb = function (s) {
+      var a = new Uint8Array(s.length / 2); for (var i = 0; i < a.length; i++) a[i] = parseInt(s.substr(2 * i, 2), 16); return a;
+    };
+    raw.banks.forEach(function (x) {
+      var b = x.bank, bin = atob(x.data), p = new Uint8Array(bin.length), i;
+      if (b !== 0 && b !== 1 || F.mem[b]) throw new Error('bank ' + b);
+      for (i = 0; i < bin.length; i++) p[i] = bin.charCodeAt(i);
+      if (p.length !== x.positions * 3 / 2 || x.positions & 1) throw new Error('bank ' + b + ': ' + p.length + ' bytes for ' + x.positions + ' positions');
+      if (crc32(p) !== x.crc32) throw new Error('bank ' + b + ': CRC-32 wrong (a damaged file)');
+      var a = new Uint16Array(65536); a.fill(SIL);
+      for (i = 0; i < x.positions; i += 2) { var o = 3 * (i >> 1); a[i] = (p[o] << 4) | (p[o + 2] & 15); a[i + 1] = (p[o + 1] << 4) | (p[o + 2] >> 4); }
+      F.mem[b] = a; F.positions[b] = x.positions;
+      x.dir.forEach(function (d) {
+        var desc = hexb(d[2]), e = { n: d[0], bank: desc[1] & 7, desc: desc, name: d[1], start: desc[2] | (desc[3] << 8),
+          len: u16(~(desc[4] | (desc[5] << 8))), loop: desc[6] | (desc[7] << 8), loopLen: u16(~(desc[8] | (desc[9] << 8))) };
+        if (e.n > 0x17 || e.bank !== b || desc.length !== 10 || e.start + e.len > x.positions || F.byPad[e.n]) throw new Error('directory entry ' + d[0]);
+        F.entries.push(e); F.byPad[e.n] = e;
+      });
+    });
+    for (var q = 0; q < 24; q++) if (!F.byPad[q]) throw new Error('no directory entry for sound ' + q);
+    // the samples: entries with the same bank and play start (Bass 1 / 2, the four Toms ...) share one region, as Copy Sound's
+    // copies do (same bank, same region start: SND_CHECK_SHARED 4CF0 with m20). Regions: 3.x keeps every region start and
+    // length even (pairs share a nibble byte; SND_CLOSE_GAP 21A5-21AF works in pairs), and Truncate frees (play start AND
+    // FFFEh) - region start from the region start (37FD-380D: an odd region start would free 65,535 positions). So each
+    // region starts at its play start made even (2A05h -> 2A04h, 440Fh -> 440Eh) and ends at its play end made even, or where
+    // the next region starts: the regions of a bank lie end to end without overlapping. The play values stay the ROM's
+    // (= the file's): ESnare (04h / 05h) and Cowbell (07h) play one position past their region's end (2A04h, 440Eh: their own
+    // last sample, the first position of the next region).
+    var by = {};
+    F.entries.forEach(function (e) {
+      var k = e.bank + ':' + e.start;
+      if (!by[k]) { by[k] = { bank: e.bank, start: e.start, end: 0, sounds: [] }; F.samples.push(by[k]); }
+      by[k].end = Math.max(by[k].end, e.start + e.len); by[k].sounds.push(e.n); e.sample = by[k];
+    });
+    F.samples.sort(function (x, y) { return x.bank - y.bank || x.start - y.start; });
+    F.samples.forEach(function (s, i) {
+      var nx = F.samples[i + 1], rs = s.start & 0xFFFE, re = (s.end + 1) & 0x1FFFE;
+      if (nx && nx.bank === s.bank) re = Math.min(re, nx.start & 0xFFFE);
+      if (re <= rs || re > 0x10000) throw new Error('sample at bank ' + s.bank + ' ' + s.start);
+      s.rstart = rs; s.rlen = re - rs;
+    });
+    return F;
+  }
+  // The factory sample a pad of a stock file refers to: region length 0, bank 0 / 1, and play start, play length, loop start
+  // and loop length as one directory entry has them; else null.
+  function factoryOf(F, m, n) {
+    if (regLen(m, n) || bankOf(m, n) > 1) return null;
+    var ps = playStart(m, n), pl = playLen(m, n), ls = loopStart(m, n), ll = u16(~r16(m, DESC + 10 * n + 8));
+    for (var i = 0; i < F.entries.length; i++) {
+      var e = F.entries[i];
+      if (e.bank === bankOf(m, n) && e.start === ps && e.len === pl && e.loop === ls && e.loopLen === ll) return e.sample;
+    }
+    return null;
+  }
+  // The factory sample a stock factory reference names (factoryRef: bank 0 / 1, region length 0, play length not 2): the
+  // directory entry with its bank and play start (stock refuses Truncate on such pads, 35F7, so the start is always an
+  // entry's; Copy Sound copies one onto another pad, 4C4F, and it then names that pad's sample); else null.
+  function refSample(F, m, n) {
+    for (var i = 0; i < F.entries.length; i++) {
+      var e = F.entries[i];
+      if (e.bank === bankOf(m, n) && e.start === playStart(m, n)) return e.sample;
+    }
+    return null;
+  }
+  // What ROM SND sends for the SOUND disk's model m (null: an empty disk, Clear Sound Memory's state: blank(tail), tail = the
+  // 241 bytes after the tables). Rule of Session 1.60 (owner, 2026-11-20): on v2.6 the factory sounds are always on A-C
+  // unless a sample was copied onto the pad, so:
+  //  - Pads: EVERY pad A1-C8 without a sample of its own (region length 0, or an 18h file's bank 0-5 sound, whose data the
+  //    file does not carry) gets a factory sample; a pad with its own sample, D1-D8 and the other table bytes stay the file's.
+  //    Settings: where the pad is a stock factory reference (factoryRef, refSample), the file's own 10 descriptor bytes
+  //    (output, level, decay mode, tuning; play and loop values as stock plays them; owner, RFI-061 (b): a play length the
+  //    ROM directory does not have stays); otherwise the pad's own ROM directory entry, as v2.6 after Clear Sound Memory
+  //    (SND_CLEAR_SETTINGS 34DD -> SND_LOAD_ROM_SOUND). Only the bank and the addresses change.
+  //  - Data: each sample needed is sent once (its pads are copies: same bank and region start, SND_CHECK_SHARED 4CF0), its
+  //    region as factoryParse gives it (RFI-060: layout K kept), with every ROM position its pads play: where they play past
+  //    the region (ESnare 1 / 2 and Cowbell one position; the .SPLB12's Snare 922) the ROM's next positions go with it, as
+  //    one piece with the next sample when that one is needed too, else as a longer region (end made even). So each pad
+  //    plays exactly the positions stock v2.6 plays from its ROM.
+  //  - Placement (3.x's rules, no holes: region starts and lengths even, each bank filled from its free position, a free
+  //    position at most FFFFh as the sampling caps it, 27F9-280E): the pieces in ROM order, each at the free position of the
+  //    first bank 0-7 it fits in (banks 0 / 1 first: where the ROMs were and the last banks 3.x samples into, m20
+  //    SND_CHOOSE_BANK); when that leaves one out, any arrangement that fits (searched in full). None: nothing is added
+  //    ('room': need = positions needed, room = free positions over the 8 banks). Banks 2-7: their stored free position
+  //    moves; a bank that was empty gets silence at positions 0-4 (SND_END_SAMPLING 252E).
+  //  - Then 3.x's own clearing for the file's type (settle; e.g. a factory reference on a D pad, as 3.x's load clears it),
+  //    so 3.x's Load Sounds, then its own Save, gives this file back.
+  // The factory data sent are pieces of the two ROM banks that never overlap: never more than stock's two banks (5 s).
+  // Out: { model (null: nothing added), pads (sound numbers given a factory sample), samples (how many), total (factory
+  // positions sent), units (the pieces: rom bank / start, bank / start / size sent), why ('disk': the disk is incomplete;
+  // 'none': every A-C pad holds its own sample; 'room'), need, room }.
+  function withFactory(m, F, tail) {
+    function none(why, need, room) { return { model: null, pads: [], samples: 0, total: 0, units: [], why: why, need: need || 0, room: room || 0 }; }
+    var c, n, j;
+    if (m) { if (!m.complete) return none('disk'); c = clone(m); } else c = blank(tail);
+    var want = [], use = [];
+    for (n = 0; n < 24; n++) {
+      if (regLen(c, n) && !c.refs[n]) continue;                                    // a sample of its own
+      var s = factoryRef(c, n) ? refSample(F, c, n) : null, e = s ? null : F.byPad[n];
+      if (e) s = e.sample;
+      want.push({ n: n, s: s, e: e });                                              // e: the ROM entry's settings (v2.6 defaults)
+      if (use.indexOf(s) < 0) use.push(s);
+    }
+    if (!want.length) return none('none');
+    use.sort(function (x, y) { return x.bank - y.bank || x.rstart - y.rstart; });
+    var units = [];
+    use.forEach(function (s) {
+      var end = s.rstart + s.rlen, u = units[units.length - 1];
+      want.forEach(function (w) {
+        if (w.s !== s) return;
+        var ps = w.e ? w.e.start : playStart(c, w.n), pl = w.e ? w.e.len : playLen(c, w.n);
+        end = Math.max(end, Math.min(0x10000, (ps + pl + 1) & 0x1FFFE));            // every position its pads play, made even
+      });
+      if (u && u.rom === s.bank && u.end > s.rstart) { u.samples.push(s); u.end = Math.max(u.end, end); }
+      else units.push({ rom: s.bank, romStart: s.rstart, end: end, samples: [s] });
+    });
+    var total = 0, fr = [], room = 0, rest = [], at = [], steps = 0;
+    units.forEach(function (u) { u.size = u.end - u.romStart; total += u.size; });
+    if (total > 0x20000) throw new Error('factory data over two banks');            // (cannot happen: pieces of two banks)
+    for (j = 0; j < 8; j++) { fr[j] = (bankFree(c, j) + 1) & 0x1FFFE; room += Math.max(0, (0xFFFF - fr[j]) & 0xFFFE); }
+    for (j = units.length - 1, n = 0; j >= 0; j--) rest[j] = n += units[j].size;
+    function fit(k) {                                                               // units k.. into the banks (first fit first)
+      if (k === units.length) return true;
+      var left = 0, b, seen = [];
+      for (b = 0; b < 8; b++) left += Math.max(0, (0xFFFF - fr[b]) & 0xFFFE);
+      if (rest[k] > left || ++steps > 200000) return false;
+      for (b = 0; b < 8; b++) {
+        var f = fr[b];
+        if (f + units[k].size > 0xFFFF || seen.indexOf(f) >= 0) continue;          // (banks with the same free position: one try)
+        seen.push(f); at[k] = { bank: b, start: f }; fr[b] = f + units[k].size;
+        if (fit(k + 1)) return true;
+        fr[b] = f;
+      }
+      return false;
+    }
+    if (!fit(0)) return none('room', total, room);
+    var last = b8(c, LAST), pads = [];
+    // (an 18h file's bank 0-5 sounds with a region have no data in the file; on D: cleared, as 3.x's load clears them in banks
+    // 0 / 1, SND_CLEAR_ROM_REFS, so that none of them names the memory the factory data now use)
+    for (n = 0; n < 32; n++) if (c.refs[n] && regLen(c, n)) clearSettings(c, n);
+    w8(c, LAST, last);
+    units.forEach(function (u, k) {
+      var B = at[k].bank, S = at[k].start, d = S - u.romStart, a = memOf(c, B), src = F.mem[u.rom];
+      for (j = 0; j < u.size; j++) a[S + j] = src[u.romStart + j];
+      if (!S) for (j = 0; j < 5; j++) a[j] = SIL;
+      u.samples.forEach(function (s, q) {
+        var nx = u.samples[q + 1], rl = (nx ? nx.rstart : u.end) - s.rstart;
+        want.forEach(function (w) {
+          if (w.s !== s) return;
+          var p = DESC + 10 * w.n, t;
+          if (w.e) for (t = 0; t < 10; t++) w8(c, p + t, w.e.desc[t]);
+          w16(c, p + 2, u16(playStart(c, w.n) + d));
+          t = loopStart(c, w.n); if (t) w16(c, p + 6, u16(t + d));
+          setRegion(c, w.n, s.rstart + d, B); w16(c, REGION + 4 * w.n + 2, rl);
+          c.refs[w.n] = false; pads.push(w.n);
+        });
+      });
+      putFree(c, B, S + u.size);
+      u.bank = B; u.start = S;
+    });
+    settle(c, false);
+    c.type = fileType(c);
+    pads.sort(function (x, y) { return x - y; });
+    return { model: c, pads: pads, samples: use.length, total: total, why: '', need: total, room: room,
+             units: units.map(function (u) { return { rom: u.rom, romStart: u.romStart, bank: u.bank, start: u.start, size: u.size,
+                                                      sounds: u.samples.map(function (s) { return s.sounds; }) }; }) };
+  }
+
   // ------------------------------------------------------------------------------- what a pad plays, as audio
   // The positions a pad plays: from play start for play length (SND_GET_PLAY_START / LENGTH; VOICE_START_NOTE word 0 = NOT
   // play length, 4773), less the first 5 words (the silence every sound starts with, 23E9 / 365D-366D). 12-bit values.
@@ -1718,6 +1954,7 @@ var SP12Snd = (function () {
            clearSettings: clearSettings, clearRefs: clearRefs, settle: settle, shared: shared, erase: erase, firstEmpty: firstEmpty,
            chooseBank: chooseBank, chooseFit: chooseFit, rec: rec, swap: swap, toggleDecay: toggleDecay, setChannel: setChannel,
            v26Plan: v26Plan, reorganise: reorganise, played: played,
+           factoryParse: factoryParse, factoryOf: factoryOf, withFactory: withFactory, factoryRef: factoryRef, refSample: refSample,
            parseWav: parseWav, parseAiff: parseAiff, sniffRate: sniffRate, mono: mono, design: design, resample: resample, to12: to12,
            wav: wav, zip: zip, crc32: crc32 };
 })();
@@ -1830,8 +2067,7 @@ var SP12Lcd = (function () {
     ready:      function (c, slot) { return ['Waiting for SP12', diskLine(c, slot)]; },
     // a function running (the SP-12 cannot tell the page whether it loads or verifies: both read the same blocks)
     start:      function () { return ['Talking to SP12', '']; },
-    // the SP-12 confirmed the 3.2 extension (07h): shown for a moment at the start of the transfer
-    safe32:     function () { return ['SP-12 Vers 3.2', 'Safe mode on']; },
+    // (page 1.7, owner: nothing about safe mode on the screen; the log has one line per transfer)
     formatting: function () { return ['Formatting Disk', 'Disk erased']; },
     saving:     function (seq, n, N) { return [seq ? 'Saving Sequences' : 'Saving Sounds', blk(n, N)]; },
     // what = 'SOUNDS', 'SEQ disk', 'SEGMENT', 'SOUND B3', 'SOUND #': the disk (or the part of it) being sent
@@ -1920,11 +2156,18 @@ var SP12Lcd = (function () {
     wavSaved:   function (k, pad) { return k === 1 ? ['Saved ' + pad, 'as .wav'] : [fit(['Saved ' + k + ' sounds', 'Saved ' + k]), 'as .zip']; },
     moved:      function (a, b) { return ['Moved ' + a + ' to ' + b, '']; },
     swapped:    function (a, b) { return ['Swapped ' + a + ' ' + b, '']; },
+    // page 1.7 (Session 1.59, RFI-058): a drop onto or from a stock factory pad under V2.6 LOCK
+    factoryKept: function (pad) { return [pad + ' factory pad', 'Kept: V2.6 LOCK']; },
     decayed:    function (pad, on) { return ['Decay/Tuning ' + pad, on ? 'DECAYED' : 'TUNED']; },
     modeDl:     function (k) { return ['Download', k ? fit([k + (k === 1 ? ' sound chosen' : ' sounds chosen'), k + ' chosen']) : 'Tap pads, ENTER']; },
     modeDel:    function (k) { return ['Delete', k ? fit([k + (k === 1 ? ' sound chosen' : ' sounds chosen'), k + ' chosen']) : 'Tap pads, ENTER']; },
     v26On:      function (moved) { return ['V2.6 LOCK on', moved ? 'Sounds moved' : 'Banks 6/7 only']; },
     v26Off:     function () { return ['V2.6 LOCK off', '20 sec, 8 banks']; },
+    // page 1.7: ROM SND (the factory sounds added to what is sent): what it adds to the SOUND disk shown; why nothing
+    romInfo:    function (pads, samples) { return ['ROM SND: ' + pads + (pads === 1 ? ' pad' : ' pads'), samples + (samples === 1 ? ' sample' : ' samples')]; },
+    // (Session 1.60: 'room' = the file's own samples leave too little memory for the factory samples its A-C pads need)
+    romNone:    function (why) { return why === 'room' ? ['No room for', 'ROM SND'] : ['ROM SND on', why === 'disk' ? 'Disk incomplete' : 'No empty A-C pad']; },
+    romOff:     function () { return ['ROM SND off', 'Disk sent as is']; },
     // page 1.5: several notes chosen in the step view (the edit screen shows "n notes"; these on a delete)
     notesGone:  function (k) { return [fit(['Deleted ' + k + ' notes', 'Deleted ' + k]), '']; },
     // page 1.5 (owner): CH, the chosen sound's output channel (the SP-12's Set-up 17 screen is "Assign Channel")
@@ -3125,17 +3368,21 @@ var SP12Edit = (function () {
 })();
 </script>
 
+<!-- page 1.7 (owner): E-mu's factory sounds for ROM SND, a separate data file next to this page (its own notice; not under
+     this page's licence). Optional: when it is missing the browser reports the missing file and the page works as page
+     1.6, with ROM SND greyed. -->
+<script src="factory_sounds.js"></script>
 <script id="page">
 'use strict';
 (function () {
   var $ = function (id) { return document.getElementById(id); };
-  var PAGE_VERSION = '1.6';
+  var PAGE_VERSION = '1.7';
   var T0 = performance.now();
   var BUSY_MS = 5000;                  // a function counts as running while the SP-12 sent something in the last 5 s
   var REFUSED_MS = 1500;               // block 0 sent, then this long with nothing: the SP-12 refused a sound load
-  var SAFE_MS = 1500;                  // how long "SP-12 Vers 3.2 / Safe mode on" shows after the SP-12's 07h
-  var LS = { in: 'sp12mididisk.in', out: 'sp12mididisk.out', disk: 'sp12mididisk.disk', v26: 'sp12mididisk.v26' };
-  var OLD_SIG = 'sp12mididisk.sig';    // page 1.0's 3.2 MODE setting: gone (the signature is always sent); removed at start
+  var ROM_MS = 1500;                   // how long "ROM SND: 24 pads / 11 samples" shows at the start of a sound read (page 1.7)
+  var LS = { in: 'sp12mididisk.in', out: 'sp12mididisk.out', disk: 'sp12mididisk.disk', v26: 'sp12mididisk.v26', rom: 'sp12mididisk.rom' };
+  var OLD_SIG = 'sp12mididisk.sig';    // page 1.0's MODE setting for the safe-mode offer: gone (the offer is always sent); removed at start
   var LCD = SP12Lcd.S;
   var SLOTS = ['snd', 'seq'];
   var NAME = { snd: 'SOUND disk', seq: 'SEQ disk' };
@@ -3151,9 +3398,11 @@ var SP12Edit = (function () {
   var st = {
     midi: navigator.requestMIDIAccess ? 'off' : 'none',   // 'none' | 'off' | 'asking' | 'refused' | 'on'
     lastIn: -1e9, litIn: 0, litOut: 0,  // lastIn: the last message that belongs to a transfer (not real-time bytes F8h-FFh)
-    extAt: -1e9,             // when the SP-12 sent 07h (the 3.2 confirmation)
     sel: 'snd',              // the disk shown and in the drive: 'snd' (SOUND key) or 'seq' (SEQ key)
-    extSeen: false,          // the SP-12 confirmed the 3.2 extension (07h) since its last status request
+    safeLog: true,           // page 1.7: this function's one safe-mode log line is written ("Safe mode on" / "... off ...")
+    rom: false,              // page 1.7: ROM SND, the factory sounds added to what is sent (remembered, localStorage)
+    driveRom: false,         // the drive holds the SOUND disk with the factory sounds added (not the slot's own blocks)
+    romAt: -1e9, romShow: null,   // a sound read with ROM SND started: its "ROM SND: n pads / k samples" screen
     fnCmds: 0,               // E-mu messages other than status, end and 07h since the last status request
     fnId: 0,                 // counts the SP-12's functions (status requests)
     dismissed: -1,           // fnId of a stopped function whose screen a page key cleared
@@ -3190,11 +3439,54 @@ var SP12Edit = (function () {
   function hex2(v) { return v === null || v === undefined ? '--' : (v < 16 ? '0' : '') + v.toString(16).toUpperCase(); }
   function typeOf(blocks) { return blocks.length && blocks[0] ? blocks[0][0] : null; }
   function slotOfType(t) { return t === 0x17 ? 'seq' : (t === 0x18 || t === 0x1A) ? 'snd' : null; }
+  // ROM SND (page 1.7, owner): the factory sounds file next to the page (factory_sounds.js: E-mu's ROM directory and samples,
+  // optional, not under this page's licence). Without it, or damaged, ROM SND is greyed and the page works as page 1.6.
+  var FACT = null, FACT_WHY = '';
+  try {
+    if (typeof SP12_FACTORY_SOUNDS === 'undefined') FACT_WHY = 'factory_sounds.js is not next to the page';
+    else FACT = SP12Snd.factoryParse(SP12_FACTORY_SOUNDS);
+  } catch (e) { FACT = null; FACT_WHY = 'factory_sounds.js not usable: ' + e.message; }
+  function romActive() { return st.rom && !!FACT; }
+  // What ROM SND sends for the SOUND disk (sound-core withFactory, on the disk as it is; nothing is stored): { blocks (null:
+  // nothing added), model, pads, samples, why }. An empty disk: the factory set as stock v2.6 has it after Clear Sound Memory.
+  var romc = { key: '', r: null };
+  function romSend() {
+    var key = slots.snd.ver + ':' + slots.snd.blocks.length;
+    if (romc.key !== key) {
+      var b = slots.snd.blocks, m = b.length ? sndModel() : null, r;
+      r = b.length && !m ? { model: null, pads: [], samples: 0, why: 'none' } : SP12Snd.withFactory(m, FACT, BLANK_TAIL);
+      romc.key = key; romc.r = { blocks: r.model ? SP12Snd.encode(r.model) : null, model: r.model, pads: r.pads, samples: r.samples, why: r.why,
+                                 total: r.total || 0, units: r.units || [], need: r.need || 0, room: r.room || 0 };
+    }
+    return romc.r;
+  }
+  function secs(p) { return (p / SP12Snd.RATE).toFixed(2) + ' s'; }
+  function romText(r) {
+    return r.blocks ? r.pads.length + (r.pads.length === 1 ? ' pad, ' : ' pads, ') + r.samples + (r.samples === 1 ? ' sample' : ' samples') +
+      ' (' + r.pads.map(function (n) { return SP12Cat.padName(n); }).join(' ') + '; factory data ' + r.total + ' positions = ' + secs(r.total) +
+      ' in bank' + (r.units.some(function (u) { return u.bank !== r.units[0].bank; }) ? 's ' : ' ') +
+      r.units.map(function (u) { return u.bank; }).filter(function (b, i, a) { return a.indexOf(b) === i; }).join(' / ') + '; ' +
+      r.blocks.length + ' blocks, type ' + hex2(r.blocks[0][0]) + 'h)' :
+      r.why === 'room' ? 'nothing added: no room for ROM SND (the A-C pads without their own sample need ' + r.need + ' positions = ' + secs(r.need) +
+      ' of factory samples; ' + r.room + ' positions = ' + secs(r.room) + ' free over the 8 banks' +
+      (r.need > r.room ? ', ' + (r.need - r.room) + ' positions = ' + secs(r.need - r.room) + ' short' : ', but not in pieces that fit') + '; the disk is sent as it is)' :
+      'nothing added (' + (r.why === 'disk' ? 'the disk is not complete' : 'every A-C pad holds a sample of its own') + ')';
+  }
+  // The SOUND disk as the catalog, the pads and the player show it, and as the drive sends it: with ROM SND the factory sounds
+  // added (not while a save from the SP-12 is coming in: then the disk is that save, as it arrives)
+  function sndBlocks() {
+    if (!romActive() || drive.fn === 'save') return slots.snd.blocks;
+    var r = romSend();
+    return r.blocks || slots.snd.blocks;
+  }
+  function driveBlocks() { return st.sel === 'snd' ? sndBlocks() : slots[st.sel].blocks; }
+  function driveSet() { var b = driveBlocks(); drive.setDisk(b); st.driveRom = b !== slots[st.sel].blocks; }
   function slotCat(k) {
-    var s = slots[k];
-    if (s.catVer !== s.ver) { s.cat = SP12Cat.decode(function (i) { return s.blocks[i] || null; }, s.blocks.length); s.catVer = s.ver; }
+    var s = slots[k], v = k === 'snd' && romActive() && drive.fn !== 'save' ? s.ver + ':rom' : s.ver;
+    if (s.catVer !== v) { var b = k === 'snd' ? sndBlocks() : s.blocks; s.cat = SP12Cat.decode(function (i) { return b[i] || null; }, b.length); s.catVer = v; }
     return s.cat;
   }
+  function catKey(k) { return k + ':' + slots[k].ver + (k === 'snd' && romActive() ? ':rom' : ''); }
   function catalog() { return slotCat(st.sel); }
   function changed(k) { slots[k].ver++; slots[k].dirty = true; slots[k].touched = true; }
   // A transfer runs while the SP-12 sent part of one in the last 5 s; a sound load it refused (below) is over at once.
@@ -3204,13 +3496,13 @@ var SP12Edit = (function () {
   // A page action puts new data into disk k (and into the drive when k is shown).
   function setSlot(k, blocks, unsaved) {
     slots[k].blocks = blocks; slots[k].unsaved = !!unsaved && blocks.length > 0; changed(k);
-    if (k === st.sel) drive.setDisk(blocks);
+    if (k === st.sel) driveSet();
   }
   // Show disk k (and put it in the drive). After a save from the SP-12 the drive already holds it: setDrive false.
   function select(k, setDrive) {
     if (st.sel === k) return;
     st.sel = k; lsSet(LS.disk, k);
-    if (setDrive) drive.setDisk(slots[k].blocks);
+    if (setDrive) driveSet();
     info(NAME[k] + ' shown and in the drive (' + slots[k].blocks.length + ' blocks)');
   }
   // Before the SP-12 replaces disk k: data that are in no file are kept as the previous disk (UNDO in the log).
@@ -3330,7 +3622,7 @@ var SP12Edit = (function () {
   }
   function refusedScreen() {
     if (st.sel === 'seq') return LCD.wrongDisk('snd');
-    if (!slots.snd.blocks.length) return LCD.emptyDisk('snd', false);
+    if (!slots.snd.blocks.length && !st.driveRom) return LCD.emptyDisk('snd', false);
     return LCD.stopped();                 // a sound file the SP-12 refused anyway (e.g. one with no sound data)
   }
   function screenNow(now) {
@@ -3346,7 +3638,7 @@ var SP12Edit = (function () {
     }
     if (busy(now)) {
       if (st.screen && st.screen[2]) return st.screen;
-      if (st.extSeen && now - st.extAt < SAFE_MS) return LCD.safe32();
+      if (st.romShow && now - st.romAt < ROM_MS) return st.romShow;   // page 1.7: a sound read with ROM SND, for a moment
       return busyScreen();
     }
     if (halted) return st.screen || LCD.stopped();     // a function went silent (no end message)
@@ -3381,9 +3673,13 @@ var SP12Edit = (function () {
     var vs = v26State();                // V2.6 LOCK: off by itself when the SOUND disk cannot live on stock v2.6 as it is
     if (st.v26 && !vs.lives && !b) { setV26(false); info('V2.6 LOCK off: the SOUND disk cannot live on stock v2.6 as it is (' + (vs.plan.ok ? 'data outside banks 6 / 7' : vs.plan.why) + ')'); }
     lamp('led-v26', st.v26);
-    var vd = b || (!st.v26 && !vs.plan.ok);
+    var vd = b || st.rom || (!st.v26 && !vs.plan.ok);   // (page 1.7: ROM SND and V2.6 LOCK exclude each other)
     if ($('k-v26').disabled !== vd) $('k-v26').disabled = vd;
     $('k-v26').setAttribute('aria-pressed', String(st.v26));
+    lamp('led-rom', romActive());          // page 1.7: ROM SND, greyed without factory_sounds.js and while V2.6 LOCK is on
+    var rd = b || !FACT || st.v26;
+    if ($('k-rom').disabled !== rd) $('k-rom').disabled = rd;
+    $('k-rom').setAttribute('aria-pressed', String(romActive()));
     var keys = [b, st.sel, !!s.prev].join();
     if (keys !== lastKeys) {
       lastKeys = keys;
@@ -3394,7 +3690,7 @@ var SP12Edit = (function () {
     }
     applyDue(); viewTick(); playKeys();
     if (st.logOpen) flushLog();
-    if (st.catOpen && st.catShown !== st.sel + ':' + s.ver && !b) renderCatalog();
+    if (st.catOpen && st.catShown !== catKey(st.sel) && !b) renderCatalog();
     if (!b) persist();
   }
 
@@ -3406,12 +3702,28 @@ var SP12Edit = (function () {
     if (!(m.length === 1 && m[0] >= 0xF8)) st.lastIn = now;   // MIDI clock etc. (the SP-12 sends F8h while its sequencer runs, 1674) is no transfer
     var emu = m.length >= 5 && m[0] === 0xF0 && m[1] === 0x18 && m[2] === 0x01 && m[m.length - 1] === 0xF7;
     var c = emu ? m[3] : -1;
+    // page 1.7: every function starts with the status request; the drive then holds what is sent (ROM SND: the SOUND disk
+    // with the factory sounds added); with ROM SND off nothing changes here (the drive already holds the disk shown)
+    if (c === 0 && (romActive() || st.driveRom)) driveSet();
+    var part = c > 1 && c !== 7 || (!emu && drive.active && m[0] !== 0xF0 && m[0] < 0xF8 && m.length <= 2);
+    // page 1.7 (owner, RFI-056): one neutral log line per transfer: "Safe mode on" (the drive's line on 07h) or, when the
+    // transfer goes on without 07h (stock v2.6, release 3.1), "Safe mode off: recovery in use"; nothing on the screen
+    if (part && drive.active && !st.safeLog) { st.safeLog = true; info('Safe mode off: recovery in use'); }
     var before = { active: drive.active, fn: drive.fn, kind: drive.kind, wpos: drive.wpos, served: drive.served, sel: st.sel,
-                   type: drive.typeByte(), name: c === 1 ? soundTargetName() : null };
+                   type: drive.typeByte(), name: c === 1 ? soundTargetName() : null, len: st.driveRom ? drive.length : slots[st.sel].blocks.length };
     drive.receive(m, t);
-    if (c === 0) { st.fnId++; st.saveTo = null; st.extSeen = false; st.fnCmds = 0; st.screen = null; st.notice = null; announce('The SP-12 started a disk function.'); }
-    else if (c === 7) { st.extSeen = true; st.extAt = now; announce('SP-12 version 3.2: safe mode on.'); }
-    else if (c > 1 || (!emu && drive.active && m[0] !== 0xF0 && m[0] < 0xF8 && m.length <= 2)) st.fnCmds++;
+    if (c === 0) { st.fnId++; st.saveTo = null; st.safeLog = false; st.romShow = null; st.fnCmds = 0; st.screen = null; st.notice = null; announce('The SP-12 started a disk function.'); }
+    else if (c === 7) st.safeLog = true;
+    else if (part) st.fnCmds++;
+    if (c === 4 && before.fn !== 'read' && drive.fn === 'read' && st.driveRom) {   // a read of the SOUND disk with ROM SND
+      var rr = romSend();
+      st.romShow = LCD.romInfo(rr.pads.length, rr.samples); st.romAt = now;
+      info('ROM SND: ' + romText(rr) + ' added to what is sent; the SOUND disk itself is not changed');
+    } else if (c === 4 && before.fn !== 'read' && drive.fn === 'read' && romActive() && st.sel === 'snd' &&
+               romSend().why === 'room') {                                    // (Session 1.60: no room: the disk goes as it is)
+      st.romShow = LCD.romNone('room'); st.romAt = now;
+      info('ROM SND: ' + romText(romSend()));
+    }
     if (c === 2 && drive.fn === 'format' && drive.length === 0) {         // Format empties the disk in the drive
       keepPrev(st.sel, 'the SP-12\'s Format');
       slots[st.sel].blocks = []; slots[st.sel].unsaved = false; changed(st.sel);
@@ -3438,14 +3750,22 @@ var SP12Edit = (function () {
     if (b.fn === 'read') {
       // only block 0, then the end: the SP-12's Catalog, or a sequence load it refused (4F04-4F08 and 4F12 / 508F send the
       // same messages)
-      if (b.kind === 'first') return slots[b.sel].blocks.length ? LCD.infoSent(b.sel) : LCD.emptyDisk(b.sel, true);
+      if (b.kind === 'first') return b.len ? LCD.infoSent(b.sel) : LCD.emptyDisk(b.sel, true);
       var what = b.kind === 'sounds' ? 'Sounds' : b.kind === 'seq' ? 'Sequences' : b.kind === 'segment#' ? 'Segment' :
         b.kind === 'sound#' ? (b.name ? 'Sound ' + b.name : 'Sound') : 'Blocks';
       return LCD.sent(what, b.served);
     }
     return LCD.stopped();
   }
+  // page 1.7 (owner, RFI-056): the log names no firmware version. The drive-core block must stay byte for byte the test
+  // page's (CLAUDE.md), so its three texts that say "3.2" are worded here, as they enter the log: its line on 07h becomes the
+  // transfer's one safe-mode line.
+  var NEUTRAL = [['extension on (3.2: 7-bit block numbers for this function)', '7-bit block numbers for this function'],
+                 ['the SP-12 accepted the signature: 7-bit block numbers for this function (3.2 extension)', 'Safe mode on'],
+                 ['although the 3.2 extension is on', 'although safe mode is on']];
+  function neutral(text) { for (var i = 0; i < NEUTRAL.length; i++) if (text.indexOf(NEUTRAL[i][0]) >= 0) text = text.split(NEUTRAL[i][0]).join(NEUTRAL[i][1]); return text; }
   drive.onLog = function (dir, bytes, text, t) {
+    text = neutral(text);
     var e = { t: t, dir: dir, bytes: bytes ? new Uint8Array(bytes) : null, text: text };
     entries.push(e); viewQueue.push(e);
     if (viewQueue.length > VIEW_MAX * 2) viewQueue.splice(0, viewQueue.length - VIEW_MAX);
@@ -3596,7 +3916,7 @@ var SP12Edit = (function () {
         } else { st.dropOld = false; info('the disk of page 1.0 stays in browser storage: the ' + NAME[k] + ' and its previous disk are both in use'); }
       }
     }
-    if (!drive.active) drive.setDisk(slots[st.sel].blocks);
+    if (!drive.active) driveSet();
     if (got.length && !st.notice) notice(LCD.restored(catalog(), st.sel), 5);
   }
 
@@ -3842,9 +4162,10 @@ var SP12Edit = (function () {
   function soundReady() {
     var c = slotCat('snd');
     if (c.kind !== 'sounds') return false;
-    var key = 'snd:' + slots.snd.ver + (st.v26 ? ':v26' : '');
+    var key = 'snd:' + slots.snd.ver + (st.v26 ? ':v26' : '') + (romActive() ? ':rom' : '');
     if (pl.sndKey !== key) {
-      var s = slots.snd, get = function (i) { return s.blocks[i] || null; }, t = SP12Play.soundTables(get), has = [], n;
+      // (page 1.7: with ROM SND the pads as they are sent, factory sounds included; 3.x plays them with the Default Decay)
+      var sb = sndBlocks(), get = function (i) { return sb[i] || null; }, t = SP12Play.soundTables(get), has = [], n;
       for (n = 0; n < 32; n++) has.push(false);
       c.sounds.forEach(function (x) { if (x.playable) has[x.n] = true; });
       // V2.6 LOCK: stock v2.6's decay rule (ROM banks 0-1 decay 31, 46FB-4703; the 1.34 'v26' flavour); 3.x: Default Decay
@@ -3855,8 +4176,8 @@ var SP12Edit = (function () {
   }
   var tbl = { key: '', t: null };
   function soundTables() {              // for the step view's decay marks (null without a SOUND disk)
-    var key = 'snd:' + slots.snd.ver;
-    if (tbl.key !== key) { tbl.key = key; tbl.t = slotCat('snd').kind === 'sounds' ? SP12Play.soundTables(function (i) { return slots.snd.blocks[i] || null; }) : null; }
+    var key = 'snd:' + slots.snd.ver + (romActive() ? ':rom' : '');
+    if (tbl.key !== key) { var sb = sndBlocks(); tbl.key = key; tbl.t = slotCat('snd').kind === 'sounds' ? SP12Play.soundTables(function (i) { return sb[i] || null; }) : null; }
     return tbl.t;
   }
   // A new sequence file (page 1.5, for an empty SEQ disk: segments and songs can be made without an SP-12 file first), exactly
@@ -3876,7 +4197,9 @@ var SP12Edit = (function () {
     var f = new Uint8Array(768), b0 = [], n, k;
     f.set([0x17, 0xFF, 0xFF, 0x94, 0x71, 0xFF, 0xFF]);
     var m = slots.snd.blocks.length ? sndModel() : null, c = m && m.complete ? SP12Snd.clone(m) : null;
-    if (c && !st.v26) SP12Snd.clearRefs(c);
+    var rs = romActive() ? romSend() : null;   // (page 1.7: with ROM SND the sounds as the SP-12 holds them after loading what is sent)
+    if (rs && rs.model) c = rs.model;
+    else if (c && !st.v26) SP12Snd.clearRefs(c);
     for (n = 0; n < 32; n++) b0[n] = c ? SP12Snd.d0(c, n) : n | 0x1E;
     for (k = 0; k < 8; k++) for (n = 0; n < 32; n++) f[407 + 32 * k + n] = b0[n];
     for (k = 0; k < 105; k++) f[663 + k] = parseInt(BLANK_SEQ_PAD.substr(2 * k, 2), 16);
@@ -3886,7 +4209,7 @@ var SP12Edit = (function () {
   // SEQ disk: the new file's model (blank: true), so NEW makes the first segment or song
   var mdl = { key: '', model: null };
   function seqModel() {
-    var key = 'seq:' + slots.seq.ver + (slots.seq.blocks.length ? '' : ':new:' + slots.snd.ver + ':' + st.v26);
+    var key = 'seq:' + slots.seq.ver + (slots.seq.blocks.length ? '' : ':new:' + slots.snd.ver + ':' + st.v26 + (romActive() ? ':rom' : ''));
     if (mdl.key !== key) {
       mdl.key = key; mdl.model = null;
       var b = slots.seq.blocks.length ? slots.seq.blocks : blankSeq();
@@ -4066,7 +4389,7 @@ var SP12Edit = (function () {
     return m && m.complete ? m : null;
   }
   function sndEdit(what, fn) {          // fn(copy, out) changes the copy (out.seq: a changed SEQ model, unused since page 1.5); returns null or a refusal
-    if (busy(performance.now())) return false;
+    if (busy(performance.now()) || romActive()) return false;   // (page 1.7: no sound edit while ROM SND is on)
     var m = sndBase();
     if (!m) { tell(LCD.cantSound(), 4); return false; }
     var c = SP12Snd.clone(m), out = {};
@@ -4123,7 +4446,7 @@ var SP12Edit = (function () {
   var WAV_TYPE = { description: 'WAV sound (.wav)', accept: { 'audio/wav': ['.wav'] }, mime: 'audio/wav' };
   var ZIP_TYPE = { description: 'ZIP archive (.zip)', accept: { 'application/zip': ['.zip'] }, mime: 'application/zip' };
   function wavFiles(ns) {
-    var m = sndModel();
+    var rs = romActive() ? romSend() : null, m = rs && rs.model ? rs.model : sndModel();   // (page 1.7: the pads as sent)
     return ns.map(function (n) { return { name: 'SP12 ' + padLabel(n) + '.wav', data: SP12Snd.wav(SP12Snd.played(m, n) || new Uint16Array(0)) }; });
   }
   function stampName(d) { return d.getFullYear() + '-' + two(d.getMonth() + 1) + '-' + two(d.getDate()) + ' ' + two(d.getHours()) + two(d.getMinutes()); }
@@ -4222,7 +4545,7 @@ var SP12Edit = (function () {
   $('f-snd').onchange = function () { var f = Array.prototype.slice.call(this.files); this.value = ''; if (f.length) recFiles(f); };
   (function () {                        // files dropped anywhere on the sound catalog: as REC
     var cat = $('catalog');
-    var files = function (e) { var t = e.dataTransfer && e.dataTransfer.types; return !!t && Array.prototype.indexOf.call(t, 'Files') >= 0 && st.catOpen && st.sel === 'snd'; };
+    var files = function (e) { var t = e.dataTransfer && e.dataTransfer.types; return !!t && Array.prototype.indexOf.call(t, 'Files') >= 0 && st.catOpen && st.sel === 'snd' && !romActive(); };
     cat.addEventListener('dragover', function (e) { if (!files(e)) return; e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; cat.classList.add('drop-files'); });
     cat.addEventListener('dragleave', function (e) { if (!e.relatedTarget || !cat.contains(e.relatedTarget)) cat.classList.remove('drop-files'); });
     cat.addEventListener('drop', function (e) { cat.classList.remove('drop-files'); if (!files(e)) return; e.preventDefault(); recFiles(Array.prototype.slice.call(e.dataTransfer.files)); });
@@ -4233,7 +4556,9 @@ var SP12Edit = (function () {
   // move (a touch that moves at once scrolls the page). Any pad, with V2.6 LOCK too (RFI-037 answer (b)).
   var pdrag = null, dragAt = -1e9;
   function padAt(x, y) { var t = document.elementFromPoint(x, y); t = t && t.closest ? t.closest('.pads [data-n]') : null; return t ? +t.getAttribute('data-n') : -1; }
-  function dropOk(a, b) { return b >= 0 && b !== a; }
+  // (page 1.7 of Session 1.59, RFI-058: under V2.6 LOCK a stock factory pad is never moved, swapped or covered)
+  function factoryKept(n) { var m = sndModel(); return st.v26 && !!m && !!m.refs[n] && SP12Snd.regLen(m, n) === 0; }
+  function dropOk(a, b) { return b >= 0 && b !== a && !factoryKept(a) && !factoryKept(b); }
   function dragMark() {
     var ps = document.querySelectorAll('.pads [data-n]'), on = !!pdrag && pdrag.on;
     for (var i = 0; i < ps.length; i++) {
@@ -4243,7 +4568,7 @@ var SP12Edit = (function () {
   }
   $('cat-body').addEventListener('pointerdown', function (e) {
     var b = e.target.closest ? e.target.closest('.pad-play') : null;
-    if (!b || b.disabled || (e.pointerType !== 'touch' && e.button !== 0) || busy(performance.now())) return;
+    if (!b || b.disabled || (e.pointerType !== 'touch' && e.button !== 0) || busy(performance.now()) || romActive()) return;
     pdrag = { n: +b.getAttribute('data-n'), x: e.clientX, y: e.clientY, id: e.pointerId, touch: e.pointerType === 'touch', on: false, over: -1, timer: 0 };
     if (pdrag.touch) pdrag.timer = setTimeout(function () { if (pdrag && !pdrag.on) { pdrag.on = true; pdrag.over = pdrag.n; dragMark(); } }, 400);
   });
@@ -4263,7 +4588,7 @@ var SP12Edit = (function () {
     if (!d.on) return;                  // a tap: the click plays it
     dragAt = performance.now();
     var to = padAt(e.clientX, e.clientY); dragMark();
-    if (!dropOk(d.n, to)) return;
+    if (!dropOk(d.n, to)) { if (to >= 0 && to !== d.n && (factoryKept(to) || factoryKept(d.n))) padMove(d.n, to); return; }   // (says why)
     padMove(d.n, to);
   });
   document.addEventListener('pointercancel', function (e) { if (pdrag && e.pointerId === pdrag.id) { clearTimeout(pdrag.timer); var was = pdrag.on; pdrag = null; if (was) dragMark(); } });
@@ -4271,7 +4596,9 @@ var SP12Edit = (function () {
   $('cat-body').addEventListener('contextmenu', function (e) { if (e.target.closest && e.target.closest('.pads')) e.preventDefault(); });
   function padMove(a, b) {
     var m = sndModel();
-    // a swap when the target holds a sound (with V2.6 LOCK also a stock factory sound: it stays, and changes places too)
+    var fk = factoryKept(b) ? b : factoryKept(a) ? a : -1;
+    if (fk >= 0) { notice(LCD.factoryKept(padLabel(fk)), 3); announce(padLabel(fk) + ' is a factory pad: kept under V2.6 LOCK.'); info('Drag ' + padLabel(a) + ' to ' + padLabel(b) + ': refused, ' + padLabel(fk) + ' is a stock factory pad (V2.6 LOCK keeps it)'); return false; }
+    // a swap when the target holds a sound (an 18h file's other references in banks 0-5 change places too)
     var move = !hasSound(b) && !(st.v26 && m && m.refs[b]), what = (move ? 'Move ' : 'Swap ') + padLabel(a) + ' ' + padLabel(b);
     var ok = sndEdit(what, function (c) { SP12Snd.swap(c, a, b); return null; });
     if (!ok) return false;
@@ -4315,6 +4642,33 @@ var SP12Edit = (function () {
     setSlot('snd', blocks, true); setV26(true); sndAfter();
     info('V2.6 LOCK on: ' + s.plan.moves + ' region(s) moved into banks 6 / 7 (bank 7: ' + s.plan.b7.length + ', bank 6: ' + s.plan.b6.length + ' regions); type 18h, ' + blocks.length + ' blocks');
     notice(LCD.v26On(true), 4); announce('V2.6 LOCK on: sounds moved into banks 6 and 7.');
+  };
+  // ROM SND (page 1.7, owner 2026-11-19): lamp on = when the page sends a sound file (Load / Verify Sounds, Load Sound #, a
+  // Catalog of it), every A-C pad without a sample of its own gets its factory sample, with the pad's own settings from the
+  // file where it has them (sound-core withFactory, Session 1.60's rule; no room: the disk as it is, "No room for ROM SND");
+  // an empty SOUND disk sends the whole factory set. Only what is sent changes: the
+  // disk, its browser copy and SAVE stay as they are. Lamp off = page 1.6. Greyed without factory_sounds.js and while V2.6
+  // LOCK is on (and V2.6 LOCK while ROM SND is on: the lock keeps a disk stock v2.6 loads, and stock has its own ROMs).
+  // While it is on, the sound tools that change the disk (REC, DELETE, DECAY, CH, dragging pads) are greyed; DOWNLOAD and
+  // playing work on the pads as they are sent.
+  function setRom(on) {
+    st.rom = !!on && !!FACT; lsSet(LS.rom, st.rom ? '1' : '0');
+    if (st.rom && st.sndMode === 'del') { st.sndMode = null; st.sndPick = []; }
+    if (!drive.active) driveSet();
+    if (st.catOpen && st.sel === 'snd') renderCatalog();
+  }
+  $('k-rom').onclick = function () {
+    if (busy(performance.now()) || !FACT || st.v26) return;
+    dismiss(); st.notice = null;
+    setRom(!st.rom);
+    if (st.rom) {
+      var r = romSend();
+      notice(r.blocks ? LCD.romInfo(r.pads.length, r.samples) : LCD.romNone(r.why), 4);
+      info('ROM SND on: ' + romText(r));
+      announce('ROM SND on: ' + (r.blocks ? r.pads.length + ' pads get factory sounds when the SOUND disk is sent.' : r.why === 'room' ? 'no room for ROM SND.' : 'nothing to add.'));
+    } else {
+      notice(LCD.romOff(), 3); info('ROM SND off: the SOUND disk is sent as it is'); announce('ROM SND off.');
+    }
   };
 
   // ------------------------------------------------------------------------------------------- tempo (segments)
@@ -5434,8 +5788,8 @@ var SP12Edit = (function () {
                 undo: b || !hist.undo.length, redo: b || !hist.redo.length, ins: b || noStep, sdel: b || noStep || last,
                 cl: b || nf < 2, cr: b || nf < 2, ent: b || !t, vdn: b || !fl, vup: b || !fl };
     if (st.sel === 'snd') {               // the sound catalog (page 1.4): DECAY needs a chosen sound, ENTER a mode with pads chosen
-      var sm = sndModel(), ch = hasSound(st.sndSel);
-      off.pdecay = b || !ch; off.pch = b || !ch; off.prec = b || st.recBusy; off.pdl = b; off.pdel = b; off.pent = b || !st.sndMode || !picked().length;
+      var sm = sndModel(), ch = hasSound(st.sndSel), ro = romActive();   // (page 1.7: ROM SND on: no tool that changes the disk)
+      off.pdecay = b || !ch || ro; off.pch = b || !ch || ro; off.prec = b || st.recBusy || ro; off.pdl = b; off.pdel = b || ro; off.pent = b || !st.sndMode || !picked().length;
       lamp('led-decay', ch && SP12Snd.decayMode(sm, st.sndSel)); lamp('led-rec', st.recBusy);
       lamp('led-dl', st.sndMode === 'dl'); lamp('led-del', st.sndMode === 'del');
     }
@@ -5495,7 +5849,7 @@ var SP12Edit = (function () {
   function s2(x) { return x.toFixed(2); }
   function renderCatalog() {
     var k = st.sel;
-    st.catShown = k + ':' + slots[k].ver;
+    st.catShown = catKey(k);
     var c = catalog(), body = $('cat-body');
     body.textContent = '';
     sv = null; songView = null;
@@ -5590,8 +5944,9 @@ var SP12Edit = (function () {
     var head = ['SP-12 MIDI Disk ' + PAGE_VERSION + ' log, ' + new Date().toISOString(),
       'Browser: ' + navigator.userAgent,
       'MIDI in: ' + (input ? input.name + ' (' + (input.manufacturer || '?') + ')' : 'none') + '; MIDI out: ' + (output ? output.name + ' (' + (output.manufacturer || '?') + ')' : 'none'),
-      'Settings: status answer ' + drive.opt.status + ', silence ' + drive.opt.silenceMs + ' ms, infer ' + drive.opt.infer + ', signature ' + drive.opt.signature,
-      'Counts: damaged requests ' + drive.counts.damaged + ', rebuilt ' + drive.counts.recovered + ', inferred ' + drive.counts.inferred + ', unused ACKs ' + drive.counts.stale + ', functions with the 3.2 extension on ' + drive.counts.ext,
+      'Settings: status answer ' + drive.opt.status + ', silence ' + drive.opt.silenceMs + ' ms, infer ' + drive.opt.infer + ', signature ' + drive.opt.signature +
+        ', ROM SND ' + (romActive() ? 'on' : 'off') + ' (' + (FACT ? 'factory_sounds.js found' : FACT_WHY) + '), V2.6 LOCK ' + (st.v26 ? 'on' : 'off'),
+      'Counts: damaged requests ' + drive.counts.damaged + ', rebuilt ' + drive.counts.recovered + ', inferred ' + drive.counts.inferred + ', unused ACKs ' + drive.counts.stale + ', functions in safe mode ' + drive.counts.ext,
       'Disks: SOUND ' + slots.snd.blocks.length + ' blocks, type ' + hex2(typeOf(slots.snd.blocks)) + 'h; SEQ ' + slots.seq.blocks.length +
         ' blocks, type ' + hex2(typeOf(slots.seq.blocks)) + 'h; shown and in the drive: ' + NAME[st.sel], ''];
     return head.concat(entries.map(function (e) { return lineOf(e, true); })).join('\n') + '\n';
@@ -5626,6 +5981,9 @@ var SP12Edit = (function () {
   info('SP-12 MIDI Disk ' + PAGE_VERSION + ' opened');
   if (lsGet(LS.disk) === 'seq') st.sel = 'seq';
   st.v26 = lsGet(LS.v26) === '1';       // V2.6 LOCK, remembered between visits (checked against the SOUND disk once it is restored)
+  st.rom = lsGet(LS.rom) === '1' && !!FACT && !st.v26;   // ROM SND (page 1.7), remembered too
+  if (!FACT) info('ROM SND greyed: ' + FACT_WHY);
+  else info('ROM SND available: factory sounds of ' + FACT.entries.length + ' pads, ' + FACT.samples.length + ' samples (factory_sounds.js)' + (st.rom ? '; ROM SND on' : ''));
   openDb().then(function (db) {
     DB = db;
     if (!db) { st.storage = false; notice(LCD.storageOff(), 6); info('browser storage not available: the disks are kept only while the page is open'); return; }
@@ -5666,7 +6024,10 @@ var SP12Edit = (function () {
     wavFiles: wavFiles, saveFile: saveFile, padLabel: padLabel, picked: picked, blankTail: BLANK_TAIL,
     // page 1.5: several notes, the file formats, the new sequence file, the pinned screen
     selectNotes: selectNotes, chosen: function () { return sv ? chosenList() : []; }, delSelection: delSelection,
-    blankSeq: blankSeq, pinCheck: pinCheck, fileName: fileName, sndChannel: sndChannel
+    blankSeq: blankSeq, pinCheck: pinCheck, fileName: fileName, sndChannel: sndChannel,
+    // page 1.7: ROM SND
+    fact: function () { return FACT; }, factWhy: function () { return FACT_WHY; }, setRom: setRom, romSend: romSend, romActive: romActive,
+    sndBlocks: sndBlocks, driveBlocks: driveBlocks, entries: function () { return entries; }, logText: function () { return logText(); }
   };
 })();
 </script>
